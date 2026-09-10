@@ -1,0 +1,26 @@
+FEZ CHECKLISTE – PWA
+
+Enthalten:
+- index.html
+- manifest.webmanifest
+- service-worker.js
+- icons/
+
+WICHTIG:
+Eine PWA kann nicht einfach aus einer lokalen Datei installiert werden.
+Sie muss über HTTPS erreichbar sein (localhost funktioniert ebenfalls).
+
+Installation auf Android:
+1. Ordner auf einen HTTPS-Webserver hochladen.
+2. Adresse in Chrome öffnen.
+3. Browser-Menü öffnen.
+4. „App installieren“ oder „Zum Startbildschirm hinzufügen“ wählen.
+
+Installation auf iPhone/iPad:
+1. Adresse in Safari öffnen.
+2. Teilen-Symbol antippen.
+3. „Zum Home-Bildschirm“ wählen.
+4. „Hinzufügen“ antippen.
+
+Nach dem ersten erfolgreichen Laden ist die Checkliste durch den Service Worker
+auch offline nutzbar.

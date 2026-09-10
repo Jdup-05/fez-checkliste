@@ -1,0 +1,800 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>FEZ Checkliste</title>
+
+  <meta name="theme-color" content="#0f4f8a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="FEZ Checkliste">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+
+  <style>
+    :root{
+      --vg-blue:#0f4f8a;
+      --vg-blue-dark:#08345f;
+      --vg-gold:#e1b84f;
+      --fire-red:#c62828;
+      --fire-red-dark:#8f1f1f;
+      --bg:#08111b;
+      --panel:#101d2a;
+      --panel-soft:#152536;
+      --panel-light:#1b2f43;
+      --text:#f7f9fc;
+      --muted:#a9b7c5;
+      --border:#2d455d;
+      --green:#299764;
+      --orange:#d98b2b;
+      --skip:#55718d;
+      --shadow:0 16px 35px rgba(0,0,0,.28);
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+      color:var(--text);
+      min-height:100vh;
+      background:
+        radial-gradient(circle at top right, rgba(15,79,138,.20), transparent 32%),
+        radial-gradient(circle at bottom left, rgba(198,40,40,.12), transparent 30%),
+        linear-gradient(150deg,#071019 0%,#0b1722 50%,#07111b 100%);
+    }
+
+    body:before{
+      content:"";
+      position:fixed;
+      inset:0 0 auto 0;
+      height:5px;
+      background:linear-gradient(90deg,var(--vg-blue) 0 46%,var(--vg-gold) 46% 67%,var(--fire-red) 67% 100%);
+      z-index:20;
+    }
+
+    .app{
+      max-width:900px;
+      margin:0 auto;
+      padding:28px 20px 40px;
+    }
+
+    .header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:18px;
+      padding:18px 20px;
+      margin-bottom:18px;
+      border:1px solid var(--border);
+      border-radius:20px;
+      background:
+        linear-gradient(110deg,rgba(15,79,138,.34),rgba(16,29,42,.95) 50%,rgba(198,40,40,.16));
+      box-shadow:var(--shadow);
+      position:relative;
+      overflow:hidden;
+    }
+
+    .header:after{
+      content:"";
+      position:absolute;
+      right:-35px;
+      top:-65px;
+      width:170px;
+      height:170px;
+      border-radius:50%;
+      border:22px solid rgba(225,184,79,.06);
+    }
+
+    .brand{
+      position:relative;
+      z-index:1;
+    }
+
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      color:var(--vg-gold);
+      font-size:12px;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:1.1px;
+      margin-bottom:5px;
+    }
+
+    .brand h1{
+      margin:0;
+      font-size:29px;
+      line-height:1.05;
+      letter-spacing:-.5px;
+    }
+
+    .brand p{
+      margin:7px 0 0;
+      color:#c7d2dc;
+      font-size:14px;
+    }
+
+    .badge{
+      position:relative;
+      z-index:1;
+      min-width:74px;
+      text-align:center;
+      background:linear-gradient(145deg,var(--fire-red),var(--fire-red-dark));
+      border:1px solid rgba(255,255,255,.14);
+      color:white;
+      padding:11px 13px;
+      border-radius:14px;
+      font-weight:900;
+      letter-spacing:1.4px;
+      box-shadow:0 8px 20px rgba(198,40,40,.24);
+    }
+
+    .card{
+      background:linear-gradient(180deg,rgba(16,29,42,.98),rgba(12,24,35,.98));
+      border:1px solid var(--border);
+      border-radius:20px;
+      padding:22px;
+      margin-bottom:16px;
+      box-shadow:var(--shadow);
+    }
+
+    .card h2{
+      letter-spacing:-.25px;
+    }
+
+    .hidden{display:none!important}
+
+    .type-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+    }
+
+    .type-btn{
+      border:1px solid var(--border);
+      background:linear-gradient(145deg,var(--panel-soft),#10202e);
+      color:white;
+      padding:25px 18px;
+      border-radius:18px;
+      cursor:pointer;
+      text-align:left;
+      transition:.16s ease;
+      position:relative;
+      overflow:hidden;
+      min-height:128px;
+    }
+
+    .type-btn:before{
+      content:"";
+      position:absolute;
+      left:0;
+      top:0;
+      bottom:0;
+      width:6px;
+    }
+
+    .type-btn.fire:before{background:var(--fire-red)}
+    .type-btn.th:before{background:var(--vg-blue)}
+
+    .type-btn:hover{
+      transform:translateY(-3px);
+      border-color:#57718a;
+      box-shadow:0 12px 24px rgba(0,0,0,.20);
+    }
+
+    .type-btn strong{
+      font-size:36px;
+      display:block;
+      margin-bottom:6px;
+      line-height:1;
+    }
+
+    .type-btn span{
+      color:#d2dce5;
+      font-size:16px;
+      font-weight:650;
+    }
+
+    .type-btn.fire strong{color:#ff6e6e}
+    .type-btn.th strong{color:#6aaeff}
+
+    .progress-wrap{margin:18px 0 20px}
+
+    .progress-head{
+      display:flex;
+      justify-content:space-between;
+      color:var(--muted);
+      font-size:13px;
+      margin-bottom:8px;
+    }
+
+    .progress{
+      height:11px;
+      background:#08121b;
+      border-radius:999px;
+      overflow:hidden;
+      border:1px solid #263d52;
+    }
+
+    .progress > div{
+      height:100%;
+      width:0;
+      background:linear-gradient(90deg,var(--vg-blue),var(--green));
+      transition:.2s width;
+    }
+
+    .question{
+      border:1px solid var(--border);
+      background:linear-gradient(145deg,var(--panel-soft),#132231);
+      border-radius:16px;
+      padding:17px;
+      margin-bottom:12px;
+      transition:.15s ease;
+    }
+
+    .question:hover{
+      border-color:#3e5b74;
+    }
+
+    .q-title{
+      font-weight:780;
+      font-size:18px;
+      margin-bottom:13px;
+      line-height:1.3;
+    }
+
+    .q-sub{
+      color:var(--muted);
+      font-size:13px;
+      margin-top:-5px;
+      margin-bottom:10px;
+    }
+
+    .answers{
+      display:flex;
+      flex-wrap:wrap;
+      gap:9px;
+    }
+
+    .answer{
+      background:#0d1924;
+      color:#eef3f7;
+      border:1px solid #40566a;
+      padding:10px 14px;
+      border-radius:11px;
+      cursor:pointer;
+      font-weight:720;
+      transition:.14s ease;
+    }
+
+    .answer:hover{
+      transform:translateY(-1px);
+      border-color:#71879a;
+    }
+
+    .answer.active.yes{
+      background:rgba(41,151,100,.18);
+      border-color:var(--green);
+      box-shadow:inset 0 0 0 1px rgba(41,151,100,.16);
+    }
+
+    .answer.active.no{
+      background:rgba(198,40,40,.17);
+      border-color:var(--fire-red);
+      box-shadow:inset 0 0 0 1px rgba(198,40,40,.14);
+    }
+
+    .answer.active.partial{
+      background:rgba(217,139,43,.18);
+      border-color:var(--orange);
+    }
+
+    .answer.active.skip{
+      background:rgba(85,113,141,.22);
+      border-color:var(--skip);
+    }
+
+    .section-title{
+      margin:23px 0 11px;
+      padding:9px 11px;
+      font-size:13px;
+      color:#f7f9fc;
+      text-transform:uppercase;
+      letter-spacing:1px;
+      font-weight:850;
+      border-left:4px solid var(--vg-gold);
+      border-radius:5px 10px 10px 5px;
+      background:linear-gradient(90deg,rgba(15,79,138,.28),rgba(15,79,138,0));
+    }
+
+    .actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:18px;
+    }
+
+    .btn{
+      border:0;
+      border-radius:12px;
+      padding:12px 16px;
+      font-weight:780;
+      cursor:pointer;
+      transition:.14s ease;
+    }
+
+    .btn:hover{transform:translateY(-1px)}
+
+    .btn.primary{
+      background:linear-gradient(145deg,var(--fire-red),var(--fire-red-dark));
+      color:white;
+      box-shadow:0 8px 18px rgba(198,40,40,.18);
+    }
+
+    .btn.secondary{
+      background:#1d3042;
+      color:white;
+      border:1px solid #3a536a;
+    }
+
+    .summary{
+      padding:17px;
+      border-radius:15px;
+      background:#0b1722;
+      border:1px solid var(--border);
+      color:#dfe7ef;
+    }
+
+    .summary strong{
+      display:block;
+      margin-bottom:8px;
+      color:var(--vg-gold);
+    }
+
+    .small{
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .status-line{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:11px;
+    }
+
+    .status-chip{
+      font-size:12px;
+      padding:6px 9px;
+      border-radius:999px;
+      background:#1c2b39;
+      border:1px solid #30495f;
+      color:#d9e1e8;
+    }
+
+    .municipal-strip{
+      display:flex;
+      align-items:center;
+      gap:9px;
+      color:#cbd6df;
+      font-size:12px;
+      margin-top:9px;
+    }
+
+    .municipal-dot{
+      width:8px;
+      height:8px;
+      border-radius:50%;
+      background:var(--vg-gold);
+      box-shadow:0 0 0 4px rgba(225,184,79,.09);
+    }
+
+    @media(max-width:600px){
+      .app{padding:16px 12px 30px}
+      .header{
+        align-items:flex-start;
+        padding:16px;
+      }
+      .brand h1{font-size:24px}
+      .brand p{font-size:13px}
+      .badge{
+        min-width:60px;
+        padding:9px 10px;
+        font-size:13px;
+      }
+      .type-grid{grid-template-columns:1fr}
+      .type-btn{min-height:110px;padding:20px}
+      .answer{
+        flex:1 1 42%;
+        text-align:center;
+      }
+      .card{padding:17px}
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <div class="header">
+      <div class="brand">
+        <div class="eyebrow">Funkeinsatzzentrale</div>
+        <h1>FEZ Checkliste</h1>
+        <p>Abfragehilfe für die Funkeinsatzzentrale</p>
+        <div class="municipal-strip">
+          <span class="municipal-dot"></span>
+          <span>Einsatzdokumentation · Checkliste · FEZ</span>
+        </div>
+      </div>
+      <div class="badge">FEZ</div>
+    </div>
+
+    <section id="startCard" class="card">
+      <h2 style="margin-top:0">Einsatzart auswählen</h2>
+      <div class="type-grid">
+        <button class="type-btn fire" onclick="startChecklist('B')">
+          <strong>B</strong>
+          <span>Brandeinsatz</span>
+        </button>
+        <button class="type-btn th" onclick="startChecklist('H')">
+          <strong>H</strong>
+          <span>Technische Hilfe</span>
+        </button>
+      </div>
+    </section>
+
+    <section id="checklistCard" class="card hidden">
+      <div style="display:flex;justify-content:space-between;gap:12px;align-items:center">
+        <div>
+          <h2 id="incidentTitle" style="margin:0">Checkliste</h2>
+          <div class="small">Punkte können beantwortet oder übersprungen werden.</div>
+        </div>
+        <button class="btn secondary" onclick="goHome()">Einsatzart ändern</button>
+      </div>
+
+      <div class="progress-wrap">
+        <div class="progress-head">
+          <span>Fortschritt</span><span id="progressText">0 / 0</span>
+        </div>
+        <div class="progress"><div id="progressBar"></div></div>
+      </div>
+
+      <div id="questions"></div>
+
+      <div class="actions">
+        <button class="btn primary" onclick="finishChecklist()">Checkliste abschließen</button>
+        <button class="btn secondary" onclick="resetChecklist()">Zurücksetzen</button>
+      </div>
+    </section>
+
+    <section id="finishCard" class="card hidden">
+      <h2 style="margin-top:0">Checkliste abgeschlossen</h2>
+      <div id="summary" class="summary"></div>
+      <div class="actions">
+        <button class="btn primary" onclick="newIncident()">Neuer Einsatz</button>
+        <button class="btn secondary" onclick="backToChecklist()">Zur Checkliste</button>
+      </div>
+    </section>
+  </main>
+
+<script>
+const commonQuestions = [
+  {
+    id:"staerken",
+    title:"Stärken eingetragen?",
+    answers:["Ja","Nein","Nur ein Teil","Überspringen"]
+  },
+  {
+    id:"einsatzleiter",
+    title:"Einsatzleiter eingetragen?",
+    answers:["Ja","Nein","Überspringen"]
+  },
+  {
+    id:"nachforderungen",
+    title:"Nachalarmierungen / Nachforderungen vollständig dokumentiert?",
+    answers:["Ja","Nein","Überspringen"]
+  },
+  {
+    id:"einsatzende",
+    title:"Einsatzende / Einsatzbereitschaft eingetragen?",
+    answers:["Ja","Nein","Überspringen"]
+  }
+];
+
+const fireQuestions = [
+  { id:"menschenrettung", title:"Menschenrettung erforderlich / durchgeführt?", answers:["Ja","Nein","Überspringen"] },
+  { id:"atemschutz", title:"Atemschutz eingesetzt?", answers:["Ja","Nein","Überspringen"] },
+  { id:"schaum", title:"Schaum genutzt?", answers:["Ja","Nein","Überspringen"] },
+  { id:"loeschmittel_sonder", title:"Besondere Löschmittel genutzt?", answers:["Ja","Nein","Überspringen"] },
+  { id:"wasserversorgung", title:"Besondere Wasserversorgung erforderlich?", answers:["Ja","Nein","Überspringen"] },
+  { id:"drehleiter", title:"Drehleiter / Hubrettungsfahrzeug eingesetzt?", answers:["Ja","Nein","Überspringen"] },
+  { id:"bma", title:"Brandmeldeanlage beteiligt?", answers:["Ja","Nein","Überspringen"] },
+  { id:"belueftung", title:"Belüftungsmaßnahmen durchgeführt?", answers:["Ja","Nein","Überspringen"] },
+  { id:"brandwache", title:"Brandwache / Nachkontrolle erforderlich?", answers:["Ja","Nein","Überspringen"] }
+];
+
+
+const foamTypeQuestion = {
+  id:"schaum_art",
+  title:"Wie wurde das Schaummittel entnommen?",
+  answers:["Kartusche","Kanister","Fahrzeugtank","Überspringen"]
+};
+
+const foamAmountCartridgeQuestion = {
+  id:"schaum_menge_kartusche",
+  title:"Menge der Kartuschen erfragt?",
+  answers:["Ja","Nein","Überspringen"]
+};
+
+const foamAmountCanisterQuestion = {
+  id:"schaum_menge_kanister",
+  title:"Menge der Kanister erfragt?",
+  answers:["Ja","Nein","Überspringen"]
+};
+
+const foamAmountTankQuestion = {
+  id:"schaum_menge_tank",
+  title:"Menge aus dem Fahrzeugtank erfragt?",
+  answers:["Ja","Nein","Überspringen"]
+};
+
+const technicalBase = [
+  {
+    id:"verkehrsunfall",
+    title:"Handelt es sich um einen Verkehrsunfall?",
+    answers:["Ja","Nein","Überspringen"]
+  },
+  {
+    id:"tueroeffnung",
+    title:"Handelt es sich um eine Türöffnung?",
+    answers:["Ja","Nein","Überspringen"]
+  },
+  {
+    id:"weitere_organisationen",
+    title:"Weitere Organisationen / Stellen nachgefordert oder verständigt?",
+    answers:["Ja","Nein","Überspringen"]
+  }
+];
+
+
+const doorOpeningQuestions = [
+  {
+    id:"tueroeffnungsart",
+    title:"Türöffnungsart eingetragen?",
+    answers:["Ja","Nein","Überspringen"]
+  },
+  {
+    id:"polizei_vor_ort",
+    title:"Polizei vor Ort erfragt / eingetragen?",
+    answers:["Ja","Nein","Überspringen"]
+  },
+  {
+    id:"rettungsdienst_vor_ort",
+    title:"Rettungsdienst vor Ort erfragt / eingetragen?",
+    answers:["Ja","Nein","Überspringen"]
+  },
+  {
+    id:"tuer_schaden",
+    title:"Beschädigung an Tür / Schloss dokumentiert?",
+    answers:["Ja","Nein","Überspringen"]
+  },
+  {
+    id:"objekt_uebergabe",
+    title:"Übergabe des Objekts dokumentiert?",
+    answers:["Ja","Nein","Überspringen"]
+  }
+];
+
+const accidentQuestions = [
+  {
+    id:"fahrzeugart",
+    title:"Fahrzeugart erfragt / eingetragen?",
+    answers:["Ja","Nein","Überspringen"]
+  },
+  {
+    id:"kennzeichen",
+    title:"Kennzeichen erfragt / eingetragen?",
+    answers:["Ja","Nein","Überspringen"]
+  },
+  {
+    id:"anzahl_fahrzeuge",
+    title:"Anzahl beteiligter Fahrzeuge erfasst?",
+    answers:["Ja","Nein","Überspringen"]
+  },
+  {
+    id:"antrieb",
+    title:"Antriebsart erfragt (Verbrenner / Elektro / Hybrid / Gas)?",
+    answers:["Ja","Nein","Überspringen"]
+  },
+  {
+    id:"gefahrgut",
+    title:"Gefahrgut / besondere Ladung vorhanden?",
+    answers:["Ja","Nein","Überspringen"]
+  }
+];
+
+let incidentType = null;
+let answers = {};
+
+function startChecklist(type){
+  incidentType = type;
+  answers = {};
+  document.getElementById("startCard").classList.add("hidden");
+  document.getElementById("finishCard").classList.add("hidden");
+  document.getElementById("checklistCard").classList.remove("hidden");
+  document.getElementById("incidentTitle").textContent =
+    type === "B" ? "B – Brandeinsatz" : "H – Technische Hilfe";
+  render();
+}
+
+function getQuestions(){
+  if(incidentType === "B"){
+    let q = [];
+    [...commonQuestions, ...fireQuestions].forEach(item => {
+      q.push(item);
+      if(item.id === "schaum" && answers["schaum"] === "Ja"){
+        q.push(foamTypeQuestion);
+        if(answers["schaum_art"] === "Kartusche"){
+          q.push(foamAmountCartridgeQuestion);
+        } else if(answers["schaum_art"] === "Kanister"){
+          q.push(foamAmountCanisterQuestion);
+        } else if(answers["schaum_art"] === "Fahrzeugtank"){
+          q.push(foamAmountTankQuestion);
+        }
+      }
+    });
+    return q;
+  }
+  let q = [...commonQuestions, ...technicalBase];
+  if(answers["verkehrsunfall"] === "Ja") q = [...q, ...accidentQuestions];
+  if(answers["tueroeffnung"] === "Ja") q = [...q, ...doorOpeningQuestions];
+  return q;
+}
+
+function answerClass(a){
+  if(a === "Ja") return "yes";
+  if(a === "Nein") return "no";
+  if(a === "Nur ein Teil") return "partial";
+  return "skip";
+}
+
+function setAnswer(id, value){
+  answers[id] = value;
+
+  if(id === "schaum" && value !== "Ja"){
+    delete answers["schaum_art"];
+    delete answers["schaum_menge_kartusche"];
+    delete answers["schaum_menge_kanister"];
+    delete answers["schaum_menge_tank"];
+  }
+
+  if(id === "schaum_art"){
+    if(value !== "Kartusche") delete answers["schaum_menge_kartusche"];
+    if(value !== "Kanister") delete answers["schaum_menge_kanister"];
+    if(value !== "Fahrzeugtank") delete answers["schaum_menge_tank"];
+  }
+
+  if(id === "tueroeffnung" && value !== "Ja"){
+    ["tueroeffnungsart","polizei_vor_ort","rettungsdienst_vor_ort","tuer_schaden","objekt_uebergabe"]
+      .forEach(key => delete answers[key]);
+  }
+
+  render();
+}
+
+function render(){
+  const questions = getQuestions();
+  const wrap = document.getElementById("questions");
+  wrap.innerHTML = "";
+
+  const commonIds = new Set(commonQuestions.map(q=>q.id));
+
+  questions.forEach((q, index)=>{
+    if(index === 0){
+      const t=document.createElement("div");
+      t.className="section-title";
+      t.textContent="Allgemeine Einsatzabfrage";
+      wrap.appendChild(t);
+    }
+    if(index > 0 && commonIds.has(questions[index-1].id) && !commonIds.has(q.id)){
+      const t=document.createElement("div");
+      t.className="section-title";
+      t.textContent = incidentType === "B" ? "Brandeinsatz" : "Technische Hilfe";
+      wrap.appendChild(t);
+    }
+    if(q.id === "fahrzeugart"){
+      const t=document.createElement("div");
+      t.className="section-title";
+      t.textContent="Zusatzfragen Verkehrsunfall";
+      wrap.appendChild(t);
+    }
+    if(q.id === "tueroeffnungsart"){
+      const t=document.createElement("div");
+      t.className="section-title";
+      t.textContent="Zusatzfragen Türöffnung";
+      wrap.appendChild(t);
+    }
+
+    const box=document.createElement("div");
+    box.className="question";
+    box.innerHTML=`<div class="q-title">${q.title}</div>
+      <div class="answers">
+        ${q.answers.map(a=>`
+          <button class="answer ${answers[q.id]===a ? 'active '+answerClass(a) : ''}"
+            onclick="setAnswer('${q.id}','${a.replaceAll("'","\\'")}')">${a}</button>
+        `).join("")}
+      </div>`;
+    wrap.appendChild(box);
+  });
+
+  const answered = questions.filter(q => answers[q.id]).length;
+  document.getElementById("progressText").textContent = `${answered} / ${questions.length}`;
+  document.getElementById("progressBar").style.width = `${questions.length ? (answered/questions.length)*100 : 0}%`;
+
+  try{
+    localStorage.setItem("fezChecklist", JSON.stringify({incidentType,answers}));
+  }catch(e){}
+}
+
+function resetChecklist(){
+  answers={};
+  render();
+}
+
+function finishChecklist(){
+  // Einsatz abschließen und sofort zur Auswahl der nächsten Einsatzart zurückkehren.
+  incidentType = null;
+  answers = {};
+  try{ localStorage.removeItem("fezChecklist"); }catch(e){}
+
+  document.getElementById("checklistCard").classList.add("hidden");
+  document.getElementById("finishCard").classList.add("hidden");
+  document.getElementById("startCard").classList.remove("hidden");
+}
+
+function backToChecklist(){
+  document.getElementById("finishCard").classList.add("hidden");
+  document.getElementById("checklistCard").classList.remove("hidden");
+}
+
+function newIncident(){
+  incidentType=null;
+  answers={};
+  try{localStorage.removeItem("fezChecklist")}catch(e){}
+  document.getElementById("finishCard").classList.add("hidden");
+  document.getElementById("checklistCard").classList.add("hidden");
+  document.getElementById("startCard").classList.remove("hidden");
+}
+
+function goHome(){
+  newIncident();
+}
+
+// Vorherigen Stand automatisch wiederherstellen
+try{
+  const saved=JSON.parse(localStorage.getItem("fezChecklist"));
+  if(saved && (saved.incidentType==="B" || saved.incidentType==="H")){
+    incidentType=saved.incidentType;
+    answers=saved.answers || {};
+    document.getElementById("startCard").classList.add("hidden");
+    document.getElementById("checklistCard").classList.remove("hidden");
+    document.getElementById("incidentTitle").textContent =
+      incidentType === "B" ? "B – Brandeinsatz" : "H – Technische Hilfe";
+    render();
+  }
+}catch(e){}
+</script>
+
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./service-worker.js").catch(err => {
+      console.log("Service Worker konnte nicht registriert werden:", err);
+    });
+  });
+}
+</script>
+
+</body>
+</html>
