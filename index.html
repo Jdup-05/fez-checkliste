@@ -759,10 +759,6 @@ function render(){
   const answered = questions.filter(q => answers[q.id]).length;
   document.getElementById("progressText").textContent = `${answered} / ${questions.length}`;
   document.getElementById("progressBar").style.width = `${questions.length ? (answered/questions.length)*100 : 0}%`;
-
-  try{
-    localStorage.setItem("fezChecklist", JSON.stringify({incidentType,answers}));
-  }catch(e){}
 }
 
 function resetChecklist(){
@@ -829,19 +825,16 @@ function goHome(){
   newIncident();
 }
 
-// Vorherigen Stand automatisch wiederherstellen
+// Bei jedem neuen Start der App beginnt die FEZ-Checkliste leer.
 try{
-  const saved=JSON.parse(localStorage.getItem("fezChecklist"));
-  if(saved && (saved.incidentType==="B" || saved.incidentType==="H")){
-    incidentType=saved.incidentType;
-    answers=saved.answers || {};
-    document.getElementById("startCard").classList.add("hidden");
-    document.getElementById("checklistCard").classList.remove("hidden");
-    document.getElementById("incidentTitle").textContent =
-      incidentType === "B" ? "B – Brandeinsatz" : "H – Technische Hilfe";
-    render();
-  }
+  localStorage.removeItem("fezChecklist");
 }catch(e){}
+
+incidentType = null;
+answers = {};
+document.getElementById("checklistCard").classList.add("hidden");
+document.getElementById("finishCard").classList.add("hidden");
+document.getElementById("startCard").classList.remove("hidden");
 </script>
 
 <script>
