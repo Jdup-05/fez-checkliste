@@ -1,4 +1,4 @@
-const CACHE_NAME = "fez-checkliste-v9";
+const CACHE_NAME = "fez-checkliste-v10";
 const ASSETS = [
   "./",
   "./index.html",
