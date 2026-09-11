@@ -441,7 +441,39 @@
       font-size:19px;
     }
 
-  </style>
+  
+    .question.main-question.main-warning{
+      border-color:#ff5a5f !important;
+      background:
+        linear-gradient(135deg,rgba(255,90,95,.24),rgba(120,20,25,.20)),
+        linear-gradient(145deg,var(--panel-soft),#132231) !important;
+      box-shadow:0 0 0 1px rgba(255,90,95,.18),0 8px 22px rgba(0,0,0,.22);
+    }
+
+    .question.main-question.main-warning:before{
+      content:"HAUPTPUNKT • PRÜFEN";
+      background:#ff5a5f;
+      color:white;
+    }
+
+    .question.main-question.main-warning .q-title{
+      color:#ffd5d7;
+    }
+
+    .question.main-question.main-ok{
+      border-color:#4caf50 !important;
+      background:
+        linear-gradient(135deg,rgba(76,175,80,.18),rgba(20,80,35,.16)),
+        linear-gradient(145deg,var(--panel-soft),#132231) !important;
+    }
+
+    .question.main-question.main-ok:before{
+      content:"HAUPTPUNKT • ERLEDIGT";
+      background:#4caf50;
+      color:white;
+    }
+
+</style>
 </head>
 <body>
   <main class="app">
@@ -745,7 +777,15 @@ function render(){
     }
 
     const box=document.createElement("div");
-    box.className = commonIds.has(q.id) ? "question main-question" : "question";
+    if(commonIds.has(q.id)){
+      const val = answers[q.id];
+      let mainState = "";
+      if(!val || val === "Nein" || val === "Nur ein Teil") mainState = " main-warning";
+      else if(val === "Ja") mainState = " main-ok";
+      box.className = "question main-question" + mainState;
+    }else{
+      box.className = "question";
+    }
     box.innerHTML=`<div class="q-title">${q.title}</div>
       <div class="answers">
         ${q.answers.map(a=>`
@@ -769,34 +809,32 @@ function resetChecklist(){
 function finishChecklist(){
   const questions = getQuestions();
   const mainQuestions = commonQuestions.slice(0, 4);
+
   const mainProblems = mainQuestions.filter(q =>
     !answers[q.id] || answers[q.id] === "Nein" || answers[q.id] === "Nur ein Teil"
   );
-  const negative = questions.filter(q => answers[q.id] === "Nein");
-  const unanswered = questions.filter(q => !answers[q.id]);
-  const partial = questions.filter(q => answers[q.id] === "Nur ein Teil");
 
-  if(negative.length || unanswered.length || partial.length){
-    let message = "Achtung – Checkliste nicht vollständig!\n\n";
+  const otherProblems = questions.filter(q =>
+    !commonIds.has(q.id) &&
+    (!answers[q.id] || answers[q.id] === "Nein" || answers[q.id] === "Nur ein Teil")
+  );
+
+  if(mainProblems.length || otherProblems.length){
+    let message = "Checkliste unvollständig!\n\n";
 
     if(mainProblems.length){
-      message += "Bei den 4 Hauptpunkten fehlt bzw. stimmt noch:\n";
+      message += "Hauptpunkte prüfen:\n";
       mainProblems.forEach(q => {
-        let status = "Nicht beantwortet";
-        if(answers[q.id] === "Nein") status = "Nein";
-        if(answers[q.id] === "Nur ein Teil") status = "Nur ein Teil";
-        message += "• " + q.title + " – " + status + "\n";
+        message += "• " + q.title + "\n";
       });
-      message += "\n";
     }
 
-    let details = [];
-    if(negative.length) details.push(negative.length + " × Nein insgesamt");
-    if(partial.length) details.push(partial.length + " × Nur ein Teil insgesamt");
-    if(unanswered.length) details.push(unanswered.length + " × unbeantwortet insgesamt");
+    if(otherProblems.length){
+      if(mainProblems.length) message += "\n";
+      message += "Weitere offene Punkte: " + otherProblems.length + "\n";
+    }
 
-    message += details.join("\n");
-    message += "\n\nMöchtest du den Einsatz wirklich abschließen?";
+    message += "\nTrotzdem abschließen?";
     if(!confirm(message)) return;
   }
 
