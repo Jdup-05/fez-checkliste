@@ -557,7 +557,7 @@
       <div class="badge">FEZ</div>
     </div>
 
-    <section id="startCard" class="card" style="position:relative"><div class="app-version">V0.10.1</div>
+    <section id="startCard" class="card" style="position:relative"><div class="app-version">V0.10.3</div>
       <h2 style="margin-top:0">Einsatzart auswählen</h2>
       <div class="type-grid">
         <button class="type-btn fire" onclick="startChecklist('B')">
@@ -860,11 +860,7 @@ function render(){
 
     const box=document.createElement("div");
     if(commonIds.has(q.id)){
-      const val = answers[q.id];
-      let mainState = "";
-      if(!val || val === "Nein" || val === "Nur ein Teil") mainState = " main-warning";
-      else if(val === "Ja") mainState = " main-ok";
-      box.className = "question main-question" + mainState;
+      box.className = "question main-question";
     }else{
       box.className = "question";
     }
