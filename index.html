@@ -10,7 +10,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="FEZ Checkliste">
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
 
   <style>
     :root{
@@ -743,7 +743,42 @@ function resetChecklist(){
 }
 
 function finishChecklist(){
-  // Einsatz abschließen und sofort zur Auswahl der nächsten Einsatzart zurückkehren.
+  const questions = getQuestions();
+
+  const negative = questions.filter(q => answers[q.id] === "Nein");
+  const unanswered = questions.filter(q => !answers[q.id]);
+  const partial = questions.filter(q => answers[q.id] === "Nur ein Teil");
+
+  if(negative.length || unanswered.length || partial.length){
+    let details = [];
+
+    if(negative.length){
+      details.push(negative.length + (negative.length === 1
+        ? " Punkt wurde mit „Nein“ beantwortet"
+        : " Punkte wurden mit „Nein“ beantwortet"));
+    }
+
+    if(partial.length){
+      details.push(partial.length + (partial.length === 1
+        ? " Punkt wurde nur teilweise erledigt"
+        : " Punkte wurden nur teilweise erledigt"));
+    }
+
+    if(unanswered.length){
+      details.push(unanswered.length + (unanswered.length === 1
+        ? " Punkt ist noch unbeantwortet"
+        : " Punkte sind noch unbeantwortet"));
+    }
+
+    const ok = confirm(
+      "Achtung – Checkliste nicht vollständig!\n\n" +
+      details.join("\n") +
+      "\n\nMöchtest du den Einsatz wirklich abschließen?"
+    );
+
+    if(!ok) return;
+  }
+
   incidentType = null;
   answers = {};
   try{ localStorage.removeItem("fezChecklist"); }catch(e){}
@@ -752,7 +787,6 @@ function finishChecklist(){
   document.getElementById("finishCard").classList.add("hidden");
   document.getElementById("startCard").classList.remove("hidden");
 }
-
 function backToChecklist(){
   document.getElementById("finishCard").classList.add("hidden");
   document.getElementById("checklistCard").classList.remove("hidden");
