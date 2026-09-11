@@ -413,6 +413,34 @@
       }
       .card{padding:17px}
     }
+  
+    .question.main-question{
+      border:2px solid var(--vg-gold);
+      background:
+        linear-gradient(135deg,rgba(225,184,79,.20),rgba(15,79,138,.18)),
+        linear-gradient(145deg,var(--panel-soft),#132231);
+      box-shadow:0 0 0 1px rgba(225,184,79,.10),0 8px 20px rgba(0,0,0,.18);
+      position:relative;
+    }
+
+    .question.main-question:before{
+      content:"HAUPTPUNKT";
+      display:inline-block;
+      margin-bottom:9px;
+      padding:4px 8px;
+      border-radius:7px;
+      background:var(--vg-gold);
+      color:#17202a;
+      font-size:10px;
+      font-weight:950;
+      letter-spacing:1px;
+    }
+
+    .question.main-question .q-title{
+      color:#ffe6a3;
+      font-size:19px;
+    }
+
   </style>
 </head>
 <body>
@@ -717,7 +745,7 @@ function render(){
     }
 
     const box=document.createElement("div");
-    box.className="question";
+    box.className = commonIds.has(q.id) ? "question main-question" : "question";
     box.innerHTML=`<div class="q-title">${q.title}</div>
       <div class="answers">
         ${q.answers.map(a=>`
@@ -744,45 +772,41 @@ function resetChecklist(){
 
 function finishChecklist(){
   const questions = getQuestions();
-
+  const mainQuestions = commonQuestions.slice(0, 4);
+  const mainProblems = mainQuestions.filter(q =>
+    !answers[q.id] || answers[q.id] === "Nein" || answers[q.id] === "Nur ein Teil"
+  );
   const negative = questions.filter(q => answers[q.id] === "Nein");
   const unanswered = questions.filter(q => !answers[q.id]);
   const partial = questions.filter(q => answers[q.id] === "Nur ein Teil");
 
   if(negative.length || unanswered.length || partial.length){
+    let message = "Achtung – Checkliste nicht vollständig!\n\n";
+
+    if(mainProblems.length){
+      message += "Bei den 4 Hauptpunkten fehlt bzw. stimmt noch:\n";
+      mainProblems.forEach(q => {
+        let status = "Nicht beantwortet";
+        if(answers[q.id] === "Nein") status = "Nein";
+        if(answers[q.id] === "Nur ein Teil") status = "Nur ein Teil";
+        message += "• " + q.title + " – " + status + "\n";
+      });
+      message += "\n";
+    }
+
     let details = [];
+    if(negative.length) details.push(negative.length + " × Nein insgesamt");
+    if(partial.length) details.push(partial.length + " × Nur ein Teil insgesamt");
+    if(unanswered.length) details.push(unanswered.length + " × unbeantwortet insgesamt");
 
-    if(negative.length){
-      details.push(negative.length + (negative.length === 1
-        ? " Punkt wurde mit „Nein“ beantwortet"
-        : " Punkte wurden mit „Nein“ beantwortet"));
-    }
-
-    if(partial.length){
-      details.push(partial.length + (partial.length === 1
-        ? " Punkt wurde nur teilweise erledigt"
-        : " Punkte wurden nur teilweise erledigt"));
-    }
-
-    if(unanswered.length){
-      details.push(unanswered.length + (unanswered.length === 1
-        ? " Punkt ist noch unbeantwortet"
-        : " Punkte sind noch unbeantwortet"));
-    }
-
-    const ok = confirm(
-      "Achtung – Checkliste nicht vollständig!\n\n" +
-      details.join("\n") +
-      "\n\nMöchtest du den Einsatz wirklich abschließen?"
-    );
-
-    if(!ok) return;
+    message += details.join("\n");
+    message += "\n\nMöchtest du den Einsatz wirklich abschließen?";
+    if(!confirm(message)) return;
   }
 
   incidentType = null;
   answers = {};
   try{ localStorage.removeItem("fezChecklist"); }catch(e){}
-
   document.getElementById("checklistCard").classList.add("hidden");
   document.getElementById("finishCard").classList.add("hidden");
   document.getElementById("startCard").classList.remove("hidden");
